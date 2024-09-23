@@ -1,13 +1,18 @@
 package com.messiasnasc.workshopmongo.resources;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.messiasnasc.workshopmongo.domain.Post;
+import com.messiasnasc.workshopmongo.resources.util.URL;
 import com.messiasnasc.workshopmongo.services.PostService;
 
 @RestController
@@ -19,8 +24,16 @@ public class PostResource {
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<Post> findById(@PathVariable String id) {
-        id = id.trim(); // Remove espaços em branco ou quebras de linha
+        id = id.trim(); 
         Post post = service.findById(id);
         return ResponseEntity.ok().body(post);
     }
+    
+	@RequestMapping(value="/titlesearch", method=RequestMethod.GET)
+ 	public ResponseEntity<List<Post>> findByTitle(@RequestParam(value="text", defaultValue="") String text) {
+		text = URL.decodeParam(text);
+		List<Post> list = service.findByTitle(text);
+		return ResponseEntity.ok().body(list);
+	}
+
 }
